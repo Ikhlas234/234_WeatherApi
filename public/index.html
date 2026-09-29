@@ -4,42 +4,197 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --laut: #0d2b3e;
+            --tosca: #19c3b1;
+            --karang: #ff7a5c;
+            --pasir: #fff4de;
+            --kabut: rgba(255, 244, 222, 0.08);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 32px 18px 48px;
+            font-family: "Nunito", sans-serif;
+            color: var(--pasir);
+            background:
+                radial-gradient(circle at 15% 10%, rgba(25, 195, 177, 0.35), transparent 45%),
+                radial-gradient(circle at 90% 85%, rgba(255, 122, 92, 0.28), transparent 45%),
+                var(--laut);
+        }
+        .wrap { max-width: 720px; margin: 0 auto; }
+        .identitas h3 { margin: 0; font-weight: 700; font-size: 0.95rem; opacity: 0.75; }
+        h1 {
+            font-family: "Fraunces", serif;
+            font-weight: 800;
+            font-size: clamp(2rem, 8vw, 3.2rem);
+            line-height: 1.05;
+            margin: 22px 0 6px;
+        }
+        .sub { margin: 0 0 22px; opacity: 0.8; }
+        form { display: flex; gap: 10px; flex-wrap: wrap; }
+        .cari {
+            flex: 1 1 240px;
+            padding: 15px 18px;
+            font: inherit;
+            font-size: 1.05rem;
+            color: var(--pasir);
+            background: var(--kabut);
+            border: 2px solid rgba(255, 244, 222, 0.25);
+            border-radius: 16px;
+            outline: none;
+        }
+        .cari::placeholder { color: rgba(255, 244, 222, 0.5); }
+        .cari:focus { border-color: var(--tosca); }
+        button {
+            padding: 15px 26px;
+            font: inherit;
+            font-weight: 700;
+            color: var(--laut);
+            background: var(--karang);
+            border: 0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        button:hover { transform: translateY(-2px); }
+        button:focus-visible { outline: 3px solid var(--tosca); outline-offset: 2px; }
+        .status { min-height: 26px; margin: 16px 2px; font-weight: 700; }
+        .status.error { color: var(--karang); }
+        .hasil { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+        .kartu {
+            padding: 18px;
+            background: var(--kabut);
+            border: 1px solid rgba(255, 244, 222, 0.18);
+            border-radius: 20px;
+            backdrop-filter: blur(6px);
+        }
+        .kartu:nth-child(odd) { border-radius: 20px 20px 4px 20px; }
+        .kartu:nth-child(even) { border-radius: 20px 4px 20px 20px; }
+        .kartu .ikon { font-size: 1.7rem; }
+        .kartu .label { margin-top: 6px; font-size: 0.85rem; opacity: 0.7; }
+        .kartu .nilai {
+            margin-top: 2px;
+            font-family: "Fraunces", serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            word-break: break-word;
+        }
+        .lebar { grid-column: 1 / -1; }
+        .lebar .nilai { color: var(--tosca); }
+        .ringkas { margin-top: 20px; opacity: 0.85; }
+        .ringkas p { margin: 4px 0; }
+        hr { border: 0; border-top: 1px solid rgba(255, 244, 222, 0.2); margin: 18px 0 8px; }
+        @media (prefers-reduced-motion: reduce) { button { transition: none; } }
+    </style>
 </head>
 <body>
-    <h3> Nama :Muhammad ikhlasul bayquni </h3>
-    <h3> Nim :20240140234 </h3>
+    <div class="wrap">
+        <div class="identitas">
+            <h3> Nama :Muhammad ikhlasul bayquni </h3>
+            <h3> Nim :20240140234 </h3>
+        </div>
 
-    <p>
-        Kota: 
-        <span id="gamping"></span>
-    </p>
+        <h1>Cari lokasi, lihat alamat lengkapnya</h1>
+        <p class="sub">Ketik nama tempat, lalu tekan Cari.</p>
 
-    <hr>
+        <form id="formCari">
+            <input class="cari" type="text" id="lokasiInput" placeholder="Contoh: Gamping, Sleman" autocomplete="off">
+            <button type="submit">Cari lokasi</button>
+        </form>
 
-    <p>
-        koordinat :
-        <span id="indonesia"></span>
+        <div class="status" id="status"></div>
 
-    </p>
+        <div class="hasil">
+            <div class="kartu">
+                <div class="ikon">🌏</div>
+                <div class="label">Negara</div>
+                <div class="nilai" id="negara">-</div>
+            </div>
+            <div class="kartu">
+                <div class="ikon">🏔️</div>
+                <div class="label">Provinsi</div>
+                <div class="nilai" id="provinsi">-</div>
+            </div>
+            <div class="kartu lebar">
+                <div class="ikon">🏘️</div>
+                <div class="label">Kecamatan</div>
+                <div class="nilai" id="kecamatan">-</div>
+            </div>
+            <div class="kartu">
+                <div class="ikon">🧭</div>
+                <div class="label">Longitude</div>
+                <div class="nilai" id="longitude">-</div>
+            </div>
+            <div class="kartu">
+                <div class="ikon">📍</div>
+                <div class="label">Latitude</div>
+                <div class="nilai" id="latitude">-</div>
+            </div>
+        </div>
+
+        <div class="ringkas">
+            <hr>
+            <p>
+                Kota:
+                <span id="gamping"></span>
+            </p>
+            <p>
+                koordinat :
+                <span id="indonesia"></span>
+            </p>
+        </div>
+    </div>
 
     <script>
+        function tampilkan(id, nilai) {
+            document.getElementById(id).textContent = nilai;
+        }
 
-            fetch("/api/lokasi")
+        function cariLokasi(kata) {
+            var status = document.getElementById("status");
+            status.className = "status";
+            status.textContent = "Mencari lokasi...";
+
+            var alamat = "/api/lokasi";
+            if (kata) {
+                alamat = alamat + "?q=" + encodeURIComponent(kata);
+            }
+
+            fetch(alamat)
                 .then(response => response.json())
-                .tne(data =>{
+                .then(data => {
                     console.log(data);
-                    document.getElementById("gamping").innerHTML = data.lokasi;
-                    document.getElementById("indonesia").innerHTML = 
-                        data.koordinat;
-
-                                
+                    if (data.error) {
+                        status.className = "status error";
+                        status.textContent = data.error;
+                        return;
+                    }
+                    status.textContent = "Lokasi ditemukan.";
+                    tampilkan("gamping", data.kota);
+                    tampilkan("indonesia", data.koordinat);
+                    tampilkan("negara", data.negara);
+                    tampilkan("provinsi", data.provinsi);
+                    tampilkan("kecamatan", data.kecamatan);
+                    tampilkan("longitude", data.longitude);
+                    tampilkan("latitude", data.latitude);
                 })
-                .catch(erorr => {
+                .catch(error => {
                     console.error("error:", error);
-
+                    status.className = "status error";
+                    status.textContent = "Gagal terhubung ke server. Pastikan server berjalan.";
                 });
-    </script>
+        }
 
-    
+        document.getElementById("formCari").addEventListener("submit", function (e) {
+            e.preventDefault();
+            cariLokasi(document.getElementById("lokasiInput").value.trim());
+        });
+
+        cariLokasi("");
+    </script>
 </body>
 </html>
